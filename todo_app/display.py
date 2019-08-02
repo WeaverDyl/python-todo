@@ -3,7 +3,7 @@ import os
 class Display:
     colors = {
         'RED': '\033[38;5;196m',
-        'ORANGE': '',
+        'ORANGE': '\033[38;5;214',
         'GREEN': '\033[38;5;46m',
 
         'BLUE': '\033[38;5;21m',
@@ -24,3 +24,6 @@ class Display:
         """ Prints a simple welcome message. """
         Display.clear_terminal()
         print('Welcome to python-todo!')
+
+    def print_task_list(self, list):
+        pass
