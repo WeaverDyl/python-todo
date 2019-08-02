@@ -40,16 +40,32 @@ class Todo:
         print(args)
         print(args.add)
         if args.add:
-            pass
+            self.add_task()
         if args.remove:
-            pass
+            self.remove_task()
         if args.finish:
-            pass
+            self.finish_task()
         if args.unfinish:
-            pass
+            self.unfinish_task()
         if args.update:
-            pass
+            self.update_task()
+
+    def add_task(self):
+        # Need title, description(?), due date, set finished to false
         pass
+    def remove_task(self):
+        # show task list and ask for id to remove
+        pass
+    def finish_task(self):
+        # show task list and ask for id to finish
+        pass
+    def unfinish_task(self):
+        # show task list and ask for id to unfinish
+        pass
+    def update_task(self):
+       # show task list and ask for id to update
+       # then ask what to update (title/description/due date/finished)
+       pass
 
     def print_tasks(self):
         rows = None # Get individual rows from task list (rows represent tasks)
