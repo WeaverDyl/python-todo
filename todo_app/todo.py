@@ -1,16 +1,19 @@
-import argparse, sys
+import argparse
+import datetime
 from . import display
+from . import db
 
 class Todo:
     def __init__(self):
         self.display = display.Display()
+        self.db_link = db.DB()
 
         self.arg_parser = self.setup_args()
         args = self.arg_parser.parse_args()
 
         if self.check_args(args):
             self.display.print_welcome()
-            self.handle_args(self.arg_parser, args)
+            self.handle_args(args)
         else:
             self.display.print_welcome()
             self.print_tasks()
@@ -35,10 +38,8 @@ class Todo:
                 return True
         return False
 
-    def handle_args(self, parser, args):
-        # Check the arguments and add items to the list/remove/finish tasks etc
-        print(args)
-        print(args.add)
+    def handle_args(self, args):
+        """ Handler for each valid argument """
         if args.add:
             self.add_task()
         if args.remove:
@@ -47,12 +48,15 @@ class Todo:
             self.finish_task()
         if args.unfinish:
             self.unfinish_task()
-        if args.update:
+        if args.change:
             self.update_task()
 
     def add_task(self):
-        # Need title, description(?), due date, set finished to false
-        pass
+        task_title = self.ask_user_title()
+        task_description = self.ask_user_description()
+        task_due = self.ask_user_due()
+
+        self.db_link.add_task(task_title, task_description, task_due) # Call the db function to add data
     def remove_task(self):
         # show task list and ask for id to remove
         pass
@@ -67,9 +71,47 @@ class Todo:
        # then ask what to update (title/description/due date/finished)
        pass
 
+    def ask_user_title(self):
+        """ Asks the user for the title of the task """
+        title = ''
+        while title == '':
+            title = input('Give your task a name: ')
+            if title == '':
+                print('The title can\'t be an empty string!')
+        return title
+
+    def ask_user_description(self):
+        """ Gets an optional description from the user """
+        description = input('Optionally, give your task a description: ')
+        return description
+
+    def ask_user_due(self):
+        """ Gets an optional due date for the task from the user """
+        date = ''
+        asked = False
+        while asked == False or not self.validate_date(date):
+            date = input('Optionally, give your task a due date (\'mm/dd/yyyy or mm-dd-yyyy\') ')
+            asked = True
+            if date == '':
+                return date
+            if not self.validate_date(date):
+                print('That\'s not a valid date format!')
+        return date
+
+    def validate_date(self, date_str):
+        """ Ensures that the date given is in an acceptable format """
+        for date_format in ('%m/%d/%Y', '%m-%d-%Y'):
+            try:
+                if datetime.datetime.strptime(date_str, date_format):
+                    return True
+            except ValueError:
+                pass
+        return False
+
     def print_tasks(self):
         rows = None # Get individual rows from task list (rows represent tasks)
         self.display.print_task_list(rows)
 
 def run():
+    """ Entry point: creates or loads a new task list if one exists """
     Todo()
