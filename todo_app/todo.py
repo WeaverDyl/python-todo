@@ -28,6 +28,7 @@ class Todo:
         self.group.add_argument('-f', '--finish', help='Sets a task to be finished', action='store_true')
         self.group.add_argument('-u', '--unfinish', help='Sets a task to be not finished', action='store_true')
         self.group.add_argument('-c', '--change', help='Updates an existing task', action='store_true')
+        self.group.add_argument('-v', '--view', help='View your current task list', action='store_true')
 
         return self.parser
 
@@ -50,6 +51,8 @@ class Todo:
             self.unfinish_task()
         if args.change:
             self.update_task()
+        if args.view:
+            self.print_tasks()
 
     def add_task(self):
         task_title = self.ask_user_title()

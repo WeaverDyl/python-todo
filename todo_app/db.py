@@ -3,8 +3,7 @@ from pathlib import Path
 
 class DB:
     def __init__(self):
-        self.path = Path.cwd()
-        self.db_file = self.path / 'todo.db'
+        self.db_file = Path.home() / '.todo.db'
         self.db_connection = sqlite3.connect(self.db_file)
         self.initialize_db()
 
