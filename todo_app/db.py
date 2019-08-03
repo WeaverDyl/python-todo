@@ -73,6 +73,6 @@ class DB:
 
             formatted_tasks.append(task)
 
-        # Color as well! red if not finished else green, yellow if due date coming up, red if passed
+        # Color as well! yellow if due date coming up, red if passed
 
         return formatted_tasks

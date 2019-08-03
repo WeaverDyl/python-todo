@@ -33,7 +33,7 @@ class Display:
         """ Formats the rows to a table that's printed to the terminal.
             The rows are a list of dictionaries containing info for each
             row. """
-        header = ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']
+        header = [self.color_message('BOLD', i) for i in ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']]
         table_data = [task.values() for task in rows]
         table_data.insert(0, header) # The column headers are the first element of the list
         table = AsciiTable(table_data) # Create the table -- but test width before printing
