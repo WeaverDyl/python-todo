@@ -30,12 +30,13 @@ class Display:
         print('Welcome to python-todo!')
 
     def print_task_list_formatted(self, rows):
-        print("Here are your current tasks:\n")
-
-        new_rows = list(map(list, rows))
-        new_rows.insert(0, ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?'])
-        table_data = new_rows
-        table = AsciiTable(table_data)
+        """ Formats the rows to a table that's printed to the terminal.
+            The rows are a list of dictionaries containing info for each
+            row. """
+        header = ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']
+        table_data = [task.values() for task in rows]
+        table_data.insert(0, header) # The column headers are the first element of the list
+        table = AsciiTable(table_data) # Create the table -- but test width before printing
 
         # Check that the table will fit the width of the terminal
         max_width_table = sum(table.column_widths)
@@ -44,5 +45,6 @@ class Display:
             print(self.color_message('RED', f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}'))
             return
 
-        # Otherwise, the table fits and we can print it
+        # The table fits and we can print it
+        print("Here are your current tasks:\n")
         print(table.table)
