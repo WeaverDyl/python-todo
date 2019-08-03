@@ -17,8 +17,8 @@ class DB:
                         task text,
                         description text DEFAULT '',
                         due DATE,
-                        finished BOOLEAN NOT NULL CHECK (finished in (0,1)) DEFAULT (0)
-                        )''')
+                        finished BOOLEAN NOT NULL CHECK (finished in (0,1)) DEFAULT (0))
+                       ''')
         self.db_connection.commit()
 
     def add_task(self, task, description, due, finished=0):
@@ -26,3 +26,22 @@ class DB:
         cursor = self.db_connection.cursor()
         cursor.execute("INSERT INTO task_list (task, description, due, finished) VALUES (?, ?, ?, ?)", (task, description, due, finished))
         self.db_connection.commit()
+
+    def get_tasks(self):
+        """ Returns a list of each row in the database (corresponds to tasks) """
+        cursor = self.db_connection.cursor()
+        cursor.execute("SELECT * FROM task_list")
+
+        row_id = 1
+        tasks = [] # List of rows
+        while True:
+            row = cursor.fetchone()
+            if row is None:
+                break
+
+            new_row = (row_id, *row) # Add a row id so we can represent each row
+            tasks.append(new_row)
+            row_id += 1
+
+        return tasks
+

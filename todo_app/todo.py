@@ -112,9 +112,10 @@ class Todo:
         return False
 
     def print_tasks(self):
-        rows = None # Get individual rows from task list (rows represent tasks)
-        self.display.print_task_list(rows)
+        rows = self.db_link.get_tasks()
+        self.display.print_task_list_formatted(rows)
 
 def run():
     """ Entry point: creates or loads a new task list if one exists """
     Todo()
+
