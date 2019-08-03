@@ -1,6 +1,6 @@
 import os
-
-from . import db
+import shutil
+from terminaltables import AsciiTable
 
 class Display:
     colors = {
@@ -30,39 +30,19 @@ class Display:
         print('Welcome to python-todo!')
 
     def print_task_list_formatted(self, rows):
-        print("Here are your current tasks:\n\n")
+        print("Here are your current tasks:\n")
 
-        # Get extreme values for each element of the tasks (still need maximums with an option to override)
-        max_len_rowid = 0
-        max_len_title = 0
-        max_len_desc = 0
-        max_len_due = 10 # Supports up to year 9999. I'm sad to say I won't be maintaining this after that
-        max_len_finished = 1 # ✓ X
-        # more pythonic??
-        for task in rows:
-            row_id = task[0]
-            title = task[2]
-            description = task[3]
+        new_rows = list(map(list, rows))
+        new_rows.insert(0, ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?'])
+        table_data = new_rows
+        table = AsciiTable(table_data)
 
-            if len(row_id) > max_len_rowid:
-                max_len_rowid = len(row_id)
-            if len(title) > max_len_title:
-                max_len_title = len(title)
-            if len(description) > max_len_desc:
-                max_len_desc  = len(description)
+        # Check that the table will fit the width of the terminal
+        max_width_table = sum(table.column_widths)
+        term_width = shutil.get_terminal_size().columns
+        if max_width_table > term_width:
+            print(self.color_message('RED', f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}'))
+            return
 
-        # Check if all tasks will fit into width of current window, error if not possible here
-        # To get current terminal width:
-        #
-        # import shutil
-        # shutil.get_terminal_size().columns
-
-        for task in rows:
-            row_id = task[0]
-            title = task[2]
-            description = task[3]
-            due = task[4]
-            finished = task[5]
-
-            print(f'{row_id}\t{finished}\t{title}\t{due}\t')
-
+        # Otherwise, the table fits and we can print it
+        print(table.table)
