@@ -1,5 +1,6 @@
 import os
 import shutil
+import timeago
 from terminaltables import AsciiTable
 
 class Display:
@@ -28,6 +29,26 @@ class Display:
         """ Prints a simple welcome message. """
         Display.clear_terminal()
         print('Welcome to python-todo!')
+
+    def format_row(self, tasks):
+        formatted_tasks = []
+
+        for task in tasks:
+            # Format specific columns
+            timestamp = task['Added']
+            finished = task['Finished?']
+
+            formatted_timestamp = timeago.format(timestamp, locale='en_short')
+            formatted_finished = self.color_message('GREEN', '✓') if finished == '1' else self.color_message('RED', 'X')
+
+            task['Added'] = formatted_timestamp
+            task['Finished?'] = formatted_finished
+
+            formatted_tasks.append(task)
+
+        # Color as well! yellow if due date coming up, red if passed
+
+        return formatted_tasks
 
     def print_task_list_formatted(self, rows):
         """ Formats the rows to a table that's printed to the terminal.

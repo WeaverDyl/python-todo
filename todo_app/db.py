@@ -1,5 +1,4 @@
 import sqlite3
-import timeago
 from pathlib import Path
 from . import display
 
@@ -54,25 +53,4 @@ class DB:
 
             tasks.append(new_task)
 
-        final_format_tasks = self.format_row(tasks)
-        return final_format_tasks
-
-    def format_row(self, tasks):
-        formatted_tasks = []
-
-        for task in tasks:
-            # Format specific columns
-            timestamp = task['Added']
-            finished = task['Finished?']
-
-            formatted_timestamp = timeago.format(timestamp, locale='en_short')
-            formatted_finished = self.display.color_message('GREEN', '✓') if finished == '1' else self.display.color_message('RED', 'X')
-
-            task['Added'] = formatted_timestamp
-            task['Finished?'] = formatted_finished
-
-            formatted_tasks.append(task)
-
-        # Color as well! yellow if due date coming up, red if passed
-
-        return formatted_tasks
+        return tasks

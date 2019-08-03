@@ -112,8 +112,9 @@ class Todo:
         return False
 
     def print_tasks(self):
-        rows = self.db_link.get_tasks()
-        self.display.print_task_list_formatted(rows)
+        unformatted_rows = self.db_link.get_tasks()
+        formatted_rows = self.display.format_row(unformatted_rows)
+        self.display.print_task_list_formatted(formatted_rows)
 
 def run():
     """ Entry point: creates or loads a new task list if one exists """
