@@ -27,13 +27,21 @@ class DB:
     def add_task(self, task, description, due, finished=0):
         """ Adds a brand new task to the database """
         cursor = self.db_connection.cursor()
-        cursor.execute("INSERT INTO task_list (task, description, due, finished) VALUES (?, ?, ?, ?)", (task, description, due, finished))
+        cursor.execute('INSERT INTO task_list (task, description, due, finished) VALUES (?, ?, ?, ?)', (task, description, due, finished))
         self.db_connection.commit()
+
+    def get_num_tasks(self):
+        """ Returns the number of tasks in the task list """
+        cursor = self.db_connection.cursor()
+        cursor.execute('SELECT COUNT(*) FROM task_list')
+        num = cursor.fetchone()
+
+        return num[0]
 
     def get_tasks(self):
         """ Returns a list of each row in the database (corresponds to tasks) """
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT * FROM task_list")
+        cursor.execute('SELECT * FROM task_list')
 
         initial_data = cursor.fetchall() # Returns list of rows, where each row is a tuple
         #tasks = [list(task) for task in initial_data] # converts that list of tuples to a list of lists

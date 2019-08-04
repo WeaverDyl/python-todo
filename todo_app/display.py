@@ -1,8 +1,9 @@
 import os
 import math
 import shutil
-from datetime import datetime, timedelta
+from datetime import datetime
 from terminaltables import AsciiTable
+from . import db
 
 class Display:
     colors = {
@@ -18,9 +19,10 @@ class Display:
         'RESET': '\033[0m'
     }
 
-    def color_message(self, color, message):
+    def color_message(self, message, *args):
         """ Sets a message to be a specific color from the colors dict before resetting """
-        return ''.join([self.colors[color], message, self.colors['RESET']])
+        args_list = [str(color) for color in args]
+        return ''.join([''.join([self.colors[i] for i in args_list]), message, self.colors['RESET']])
 
     @staticmethod
     def clear_terminal():
@@ -29,9 +31,15 @@ class Display:
     def print_welcome(self):
         """ Prints a simple welcome message. """
         Display.clear_terminal()
-        print('Welcome to python-todo!')
+        print(self.color_message('Welcome to python-todo!\n', 'BOLD'))
+
+    def print_commands(self):
+        """ Prints a list of available commands to run the program with.
+            Shown when the user has an empty task list """
+        pass
 
     def format_row(self, tasks):
+        """ Performs formatting tasks such as changing task completions from (0,1) to (X/✓) """
         formatted_tasks = []
 
         for task in tasks:
@@ -40,7 +48,7 @@ class Display:
             finished = task['Finished?']
 
             formatted_timestamp = self.format_time(timestamp)
-            formatted_finished = self.color_message('GREEN', '✓') if finished == '1' else self.color_message('RED', 'X')
+            formatted_finished = self.color_message('✓', 'GREEN') if finished == '1' else self.color_message('X', 'RED')
 
             task['Added'] = formatted_timestamp
             task['Finished?'] = formatted_finished
@@ -51,7 +59,8 @@ class Display:
 
         return formatted_tasks
 
-    def format_time(self, timestamp):
+    @staticmethod
+    def format_time(timestamp):
         """ Returns a nice timestamp telling the user how old a task is.
             Returns strings such as '1d ago' """
         timestamp_datetime = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
@@ -94,7 +103,7 @@ class Display:
         """ Formats the rows to a table that's printed to the terminal.
             The rows are a list of dictionaries containing info for each
             row. """
-        header = [self.color_message('BOLD', i) for i in ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']]
+        header = [self.color_message(i, 'BOLD') for i in ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']]
         table_data = [task.values() for task in rows]
         table_data.insert(0, header) # The column headers are the first element of the list
         table = AsciiTable(table_data) # Create the table -- but test width before printing
@@ -103,9 +112,50 @@ class Display:
         max_width_table = sum(table.column_widths)
         term_width = shutil.get_terminal_size().columns
         if max_width_table > term_width:
-            print(self.color_message('RED', f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}'))
+            print(self.color_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}', 'RED', 'BOLD'))
             return
 
         # The table fits and we can print it
-        print("Here are your current tasks:\n")
+        print(self.color_message('Here are your current tasks:\n', 'BOLD'))
         print(table.table)
+
+
+    # Methods for ADDING tasks
+    def ask_user_title(self):
+        """ Asks the user for the title of the task """
+        title = ''
+        while title == '':
+            title = input(self.color_message('Give your task a name: ', 'BOLD'))
+            if title == '':
+                print(self.color_message('The title can\'t be an empty string!', 'BOLD'))
+        return title
+
+    def ask_user_description(self):
+        """ Gets an optional description from the user """
+        description = input(self.color_message('Optionally, give your task a description: ', 'BOLD'))
+        return description
+
+    def ask_user_due(self):
+        """ Gets an optional due date for the task from the user """
+        date = ''
+        asked = False
+        while asked == False or not self.validate_date(date):
+            # RED
+            date = input(self.color_message('Optionally, give your task a due date (\'mm/dd/yyyy or mm-dd-yyyy\'): ', 'BOLD'))
+            asked = True
+            if date == '':
+                return date
+            if not self.validate_date(date):
+                print(self.color_message('That\'s not a valid date format!', 'RED', 'BOLD'))
+        return date
+
+    def validate_date(self, date_str):
+        """ Ensures that the date given is in an acceptable format """
+        for date_format in ('%m/%d/%Y', '%m-%d-%Y'):
+            try:
+                if datetime.strptime(date_str, date_format):
+                    return True
+            except ValueError:
+                pass
+        return False
+
