@@ -81,7 +81,7 @@ class Todo:
 
     def remove_task(self):
         """ Removes a task from the task list """
-        row_id = self.get_valid_id() # Get the task ID user wants removed
+        row_id = self.get_valid_id('remove') # Get the task ID user wants removed
 
         if row_id == -1:
             return
@@ -110,18 +110,21 @@ class Todo:
         # then ask what to update (title/description/due date/finished)
         pass
 
-    def get_valid_id(self):
-        row_id = int(self.display.ask_user_id('TEST'))
+    def get_valid_id(self, action):
+        """ Gets a valid row ID from the user, used for remove/finish/unfinish
+            and updating rows"""
+        row_id = self.display.ask_user_id(action)
 
-        while not self.db_link.verify_id(row_id) or int(row_id) == -1:
+        # We repeat until we get a valid ID or user cancels
+        while not self.db_link.verify_id(row_id):
             # User cancelled operation
-            if int(row_id) == -1:
+            if row_id == "-1":
                 return -1
 
             if not self.db_link.verify_id(row_id):
                 self.display.print_error("Invalid ID given")
 
-            row_id = self.display.ask_user_id('TEST')
+            row_id = self.display.ask_user_id(action)
 
         return row_id
 
