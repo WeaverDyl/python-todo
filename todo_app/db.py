@@ -44,7 +44,7 @@ class DB:
     def get_tasks(self):
         """ Returns a list of each row in the database (corresponds to tasks) """
         cursor = self.db_connection.cursor()
-        cursor.execute('SELECT * FROM task_list')
+        cursor.execute('SELECT ROWID, * FROM task_list')
 
         initial_data = cursor.fetchall() # Returns list of rows, where each row is a tuple
 
@@ -53,12 +53,12 @@ class DB:
         for row_id, task in enumerate(initial_data):
             new_task = {}
 
-            new_task['ID'] = row_id + 1 # Start id at 1
-            new_task['Added'] = task[0]
-            new_task['Title'] = task[1]
-            new_task['Description'] = task[2]
-            new_task['Due'] = task[3]
-            new_task['Finished?'] = task[4]
+            new_task['ID'] = task[0]
+            new_task['Added'] = task[1]
+            new_task['Title'] = task[2]
+            new_task['Description'] = task[3]
+            new_task['Due'] = task[4]
+            new_task['Finished?'] = task[5]
 
             tasks.append(new_task)
 
@@ -69,8 +69,7 @@ class DB:
             the task ID the user gave, False otherwise """
         cursor = self.db_connection.cursor()
         cursor.execute('SELECT COUNT(*) FROM task_list where ROWID=(?)', (row_id,))
-        num_count = cursor.fetchone()
-
+        num_count = cursor.fetchone()# User cancelled operation)
         # If there are no matching ID's, it must not be a valid task ID
         if num_count[0] == 0:
             return False

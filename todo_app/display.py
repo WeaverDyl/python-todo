@@ -50,7 +50,7 @@ class Display:
     def print_welcome(self):
         """ Prints a simple welcome message. """
         Display.clear_terminal()
-        self.print_message('Welcome to python-todo!')
+        self.print_message('Welcome to python-todo!\n')
 
     def print_commands(self):
         """ Prints a list of available commands to run the program with.
@@ -66,9 +66,9 @@ class Display:
         table = AsciiTable(table_data)
 
         if not self.check_table_fit(table):
-            self.print_message("Try adding a task to your list! just call `python-todo -a`")
+            self.print_message("\nTry adding a task to your list! just call `python-todo -a`")
         else:
-            self.print_message("Try adding a task to your list! Here's the available commands:")
+            self.print_message("\nTry adding a task to your list! Here's the available commands:")
             print(table.table)
 
     def format_row(self, tasks):
@@ -147,7 +147,7 @@ class Display:
             return
 
         # The table fits and we can print it
-        self.print_message('\nHere are your current tasks:')
+        self.print_message('Here are your current tasks:')
         print(table.table)
 
 
@@ -156,9 +156,9 @@ class Display:
         """ Asks the user for the title of the task """
         title = ''
         while title == '':
-            title = input(self.color_message('\nGive your task a name: ', 'BOLD'))
+            title = input(self.color_message('Give your task a name: ', 'BOLD'))
             if title == '':
-                self.color_message('The title can\'t be an empty string!', 'BOLD')
+                self.print_error('The title can\'t be an empty string!')
         return title
 
     def ask_user_description(self):
@@ -176,7 +176,7 @@ class Display:
             if date == '':
                 return date
             if not self.validate_date(date):
-                self.color_message('That\'s not a valid date format!', 'RED', 'BOLD')
+                self.print_error('That\'s not a valid date format!')
         return date
 
     @staticmethod

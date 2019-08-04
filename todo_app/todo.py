@@ -77,28 +77,26 @@ class Todo:
 
         # Call the db function to add data
         self.db_link.add_task(task_title, task_description, task_due)
+        self.display.print_message('\nTask successfully added.\n')
 
     def remove_task(self):
         """ Removes a task from the task list """
-        row_id = self.display.ask_user_id('remove') # Get the task ID user wants removed
+        row_id = self.get_valid_id() # Get the task ID user wants removed
 
-        # Check that the ID is valid
-        if not self.db_link.verify_id(row_id):
-            self.display.print_error('Invalid ID given!')
-            self.remove_task() # Recall until user quits or gives valid ID
+        if row_id == -1:
+            return
+
+        self.db_link.remove_task(row_id) # Actually remove the task
+
+        # If the task list is empty, print that fact, else print the rest of the tasks
+        if self.db_link.get_num_tasks() > 0:
+            self.display.print_message('\nTask successfully removed.\n')
+            self.print_tasks()
         else:
-            self.db_link.remove_task(row_id) # Actually remove the task
-
-            # If the task list is empty, print that fact, else print the rest of the tasks
-            if self.db_link.get_num_tasks() > 0:
-                self.display.print_message('Task successfully removed.')
-                self.print_tasks()
-            else:
-                self.display.print_message('Task successfully removed. Your task list is empty.')
+            self.display.print_message('\nTask successfully removed. Your task list is empty.\n')
 
     def finish_task(self):
         """ Finishes a given task in the task list """
-        # show task list and ask for id to finish
         pass
 
     def unfinish_task(self):
@@ -111,6 +109,21 @@ class Todo:
         # show task list and ask for id to update
         # then ask what to update (title/description/due date/finished)
         pass
+
+    def get_valid_id(self):
+        row_id = int(self.display.ask_user_id('TEST'))
+
+        while not self.db_link.verify_id(row_id) or int(row_id) == -1:
+            # User cancelled operation
+            if int(row_id) == -1:
+                return -1
+
+            if not self.db_link.verify_id(row_id):
+                self.display.print_error("Invalid ID given")
+
+            row_id = self.display.ask_user_id('TEST')
+
+        return row_id
 
     def print_tasks(self):
         """ Obtains each row of the task list and prints them after formatting """
