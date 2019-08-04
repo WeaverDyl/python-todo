@@ -23,6 +23,15 @@ class Display:
         args_list = [str(color) for color in args]
         return ''.join([''.join([self.colors[i] for i in args_list]), message, self.colors['RESET']])
 
+    def print_error(self, message):
+        print(self.color_message(message, 'BOLD', 'RED'))
+
+    def print_success(self, message):
+        print(self.color_message(message, 'BOLD', 'GREEN'))
+
+    def print_message(self, message):
+        print(self.color_message(message, 'BOLD'))
+
     @staticmethod
     def clear_terminal():
         """ Clears a terminal to prepare for output """
@@ -41,12 +50,12 @@ class Display:
     def print_welcome(self):
         """ Prints a simple welcome message. """
         Display.clear_terminal()
-        print(self.color_message('Welcome to python-todo!\n', 'BOLD'))
+        self.print_message('Welcome to python-todo!')
 
     def print_commands(self):
         """ Prints a list of available commands to run the program with.
             Shown when the user has an empty task list """
-        commands = [['Commands', 'Description'],
+        commands = [[self.color_message(i, 'BOLD') for i in ['Commands', 'Description']],
                     ['-a/--add', 'Add a new element to a task list'],
                     ['-r/--remove', 'Remove an element from a task list'],
                     ['-f/--finish', 'Finish a task in a task list'],
@@ -57,9 +66,9 @@ class Display:
         table = AsciiTable(table_data)
 
         if not self.check_table_fit(table):
-            print("Try adding a task to your list! just call `python-todo -a`")
+            self.print_message("Try adding a task to your list! just call `python-todo -a`")
         else:
-            print("Try adding a task to your list! Here's the available commands:")
+            self.print_message("Try adding a task to your list! Here's the available commands:")
             print(table.table)
 
     def format_row(self, tasks):
@@ -72,7 +81,7 @@ class Display:
             finished = task['Finished?']
 
             formatted_timestamp = self.format_time(timestamp)
-            formatted_finished = self.color_message('✓', 'BOLD', 'GREEN') if finished == '1' else self.color_message('X', 'BOLD', 'RED')
+            formatted_finished = self.color_message('✓', 'GREEN', 'BOLD') if finished == '1' else self.color_message('X', 'BOLD', 'RED')
 
             task['Added'] = formatted_timestamp
             task['Finished?'] = formatted_finished
@@ -134,11 +143,11 @@ class Display:
         if not self.check_table_fit(table):
             max_width_table = table.table_width
             term_width = shutil.get_terminal_size().columns
-            print(self.color_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}.', 'RED', 'BOLD'))
+            self.print_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}.')
             return
 
         # The table fits and we can print it
-        print(self.color_message('Here are your current tasks:\n', 'BOLD'))
+        self.print_message('\nHere are your current tasks:')
         print(table.table)
 
 
@@ -147,9 +156,9 @@ class Display:
         """ Asks the user for the title of the task """
         title = ''
         while title == '':
-            title = input(self.color_message('Give your task a name: ', 'BOLD'))
+            title = input(self.color_message('\nGive your task a name: ', 'BOLD'))
             if title == '':
-                print(self.color_message('The title can\'t be an empty string!', 'BOLD'))
+                self.color_message('The title can\'t be an empty string!', 'BOLD')
         return title
 
     def ask_user_description(self):
@@ -167,7 +176,7 @@ class Display:
             if date == '':
                 return date
             if not self.validate_date(date):
-                print(self.color_message('That\'s not a valid date format!', 'RED', 'BOLD'))
+                self.color_message('That\'s not a valid date format!', 'RED', 'BOLD')
         return date
 
     @staticmethod
@@ -182,5 +191,6 @@ class Display:
         return False
 
     def ask_user_id(self, action):
-        id = input(f'What task would you like to {action}? (Enter an ID or `-1` to cancel): ')
-        return id
+        """ Ask the user for a task ID to remove/finish/unfinish/update """
+        row_id = input(self.color_message(f'What task would you like to {action}? (Enter an ID or `-1` to cancel): ', 'BOLD'))
+        return row_id

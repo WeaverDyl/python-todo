@@ -1,14 +1,11 @@
 import sqlite3
 from pathlib import Path
-from . import display
 
 class DB:
     def __init__(self):
         self.db_file = Path.home() / '.todo.db'
         self.db_connection = sqlite3.connect(self.db_file)
         self.initialize_db()
-
-        self.display = display.Display()
 
     def initialize_db(self):
         """ Create the database if it doesn't already exist """

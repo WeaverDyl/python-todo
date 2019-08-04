@@ -77,30 +77,35 @@ class Todo:
 
         # Call the db function to add data
         self.db_link.add_task(task_title, task_description, task_due)
+
     def remove_task(self):
         """ Removes a task from the task list """
         row_id = self.display.ask_user_id('remove') # Get the task ID user wants removed
 
         # Check that the ID is valid
         if not self.db_link.verify_id(row_id):
-            print(self.display.color_message('Invalid ID given!', 'BOLD', 'RED'))
-            self.remove_task() # recall until user quits or gives valid ID
+            self.display.print_error('Invalid ID given!')
+            self.remove_task() # Recall until user quits or gives valid ID
         else:
-            self.db_link.remove_task(row_id)
+            self.db_link.remove_task(row_id) # Actually remove the task
 
+            # If the task list is empty, print that fact, else print the rest of the tasks
             if self.db_link.get_num_tasks() > 0:
-                print(self.display.color_message('Task successfully removed.', 'BOLD'))
+                self.display.print_message('Task successfully removed.')
                 self.print_tasks()
             else:
-                print(self.display.color_message('Task successfully removed. Your task list is empty', 'BOLD'))
+                self.display.print_message('Task successfully removed. Your task list is empty.')
+
     def finish_task(self):
         """ Finishes a given task in the task list """
         # show task list and ask for id to finish
         pass
+
     def unfinish_task(self):
         """ Unfinishes a given task in the task list """
         # show task list and ask for id to unfinish
         pass
+
     def update_task(self):
         """ Updates a given task in the task list """
         # show task list and ask for id to update
