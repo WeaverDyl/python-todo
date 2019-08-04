@@ -58,14 +58,14 @@ class Todo:
             self.print_tasks()
             self.remove_task()
         if args.finish:
+            self.print_tasks()
             self.finish_task()
-            self.print_tasks()
         if args.unfinish:
+            self.print_tasks()
             self.unfinish_task()
-            self.print_tasks()
         if args.change:
-            self.update_task()
             self.print_tasks()
+            self.update_task()
         if args.view:
             self.print_tasks()
 
@@ -97,12 +97,25 @@ class Todo:
 
     def finish_task(self):
         """ Finishes a given task in the task list """
-        pass
+        row_id = self.get_valid_id('finish')
+
+        if row_id == -1:
+            return
+
+        self.db_link.finish_task(row_id)
+        self.display.print_message('\nTask successfully finished.\n')
+        self.print_tasks()
 
     def unfinish_task(self):
-        """ Unfinishes a given task in the task list """
-        # show task list and ask for id to unfinish
-        pass
+        """" Unfinishes a given task in the task list """
+        row_id = self.get_valid_id('unfinish')
+
+        if row_id == -1:
+            return
+
+        self.db_link.unfinish_task(row_id)
+        self.display.print_message('\nTask successfully unfinished.\n')
+        self.print_tasks()
 
     def update_task(self):
         """ Updates a given task in the task list """

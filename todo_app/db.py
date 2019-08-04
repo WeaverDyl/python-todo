@@ -30,7 +30,19 @@ class DB:
     def remove_task(self, row_id):
         """ Removes a task from the task list given its ID """
         cursor = self.db_connection.cursor()
-        cursor.execute('DELETE FROM task_list WHERE ROWID=(?)', (row_id,))
+        cursor.execute('DELETE FROM task_list WHERE ROWID = (?)', (row_id,))
+        self.db_connection.commit()
+
+    def finish_task(self, row_id):
+        """ Changes a task from being unfinished to finished """
+        cursor = self.db_connection.cursor()
+        cursor.execute('UPDATE task_list SET finished = 1 WHERE ROWID = (?)', (row_id,))
+        self.db_connection.commit()
+
+    def unfinish_task(self, row_id):
+        """ Changes a task from being finished to unfinished """
+        cursor = self.db_connection.cursor()
+        cursor.execute('UPDATE task_list SET finished = 0 WHERE ROWID = (?)', (row_id,))
         self.db_connection.commit()
 
     def get_num_tasks(self):
