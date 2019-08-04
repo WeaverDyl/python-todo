@@ -28,6 +28,15 @@ class Display:
     def clear_terminal():
         os.system('cls' if os.name == 'nt' else 'clear')
 
+    def check_table_fit(self, table):
+        """ Returns true if a terminaltable will fit within the width of
+            the current terminal width"""
+        term_width = shutil.get_terminal_size().columns
+        table_width = table.table_width
+        if table_width > term_width:
+            return False
+        return True
+
     def print_welcome(self):
         """ Prints a simple welcome message. """
         Display.clear_terminal()
@@ -36,7 +45,21 @@ class Display:
     def print_commands(self):
         """ Prints a list of available commands to run the program with.
             Shown when the user has an empty task list """
-        pass
+        commands = [['Commands', 'Description'],
+                    ['-a/--add', 'Add a new element to a task list'],
+                    ['-r/--remove', 'Remove an element from a task list'],
+                    ['-f/--finish', 'Finish a task in a task list'],
+                    ['-u/--unfinish', 'Unfinish a task in a task list'],
+                    ['-c/--change', 'Change parts of an existing task'],
+                    ['-v/--view', 'View the whole task list']]
+        table_data = commands
+        table = AsciiTable(table_data)
+
+        if not self.check_table_fit(table):
+            print("Try adding a task to your list! just call `python-todo -a`")
+        else:
+            print("Try adding a task to your list! Here's the available commands:")
+            print(table.table)
 
     def format_row(self, tasks):
         """ Performs formatting tasks such as changing task completions from (0,1) to (X/✓) """
@@ -100,19 +123,17 @@ class Display:
         return f'{years_passed}yr ago'
 
     def print_task_list_formatted(self, rows):
-        """ Formats the rows to a table that's printed to the terminal.
-            The rows are a list of dictionaries containing info for each
-            row. """
+        """ Prints each formatted task to the terminal in the form
+            of a table """
         header = [self.color_message(i, 'BOLD') for i in ['ID', 'Added', 'Title', 'Description', 'Due', 'Finished?']]
         table_data = [task.values() for task in rows]
         table_data.insert(0, header) # The column headers are the first element of the list
         table = AsciiTable(table_data) # Create the table -- but test width before printing
 
-        # Check that the table will fit the width of the terminal
-        max_width_table = sum(table.column_widths)
-        term_width = shutil.get_terminal_size().columns
-        if max_width_table > term_width:
-            print(self.color_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}', 'RED', 'BOLD'))
+        if not self.check_table_fit(table):
+            max_width_table = table.table_width
+            term_width = shutil.get_terminal_size().columns
+            print(self.color_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}.', 'RED', 'BOLD'))
             return
 
         # The table fits and we can print it
