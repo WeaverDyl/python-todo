@@ -50,7 +50,7 @@ class DB:
         for row_id, task in enumerate(initial_data):
             new_task = {}
 
-            new_task['ID'] = row_id
+            new_task['ID'] = row_id + 1 # Start id at 1
             new_task['Added'] = task[0]
             new_task['Title'] = task[1]
             new_task['Description'] = task[2]

@@ -72,7 +72,7 @@ class Display:
             finished = task['Finished?']
 
             formatted_timestamp = self.format_time(timestamp)
-            formatted_finished = self.color_message('✓', 'GREEN') if finished == '1' else self.color_message('X', 'RED')
+            formatted_finished = self.color_message('✓', 'BOLD', 'GREEN') if finished == '1' else self.color_message('X', 'BOLD', 'RED')
 
             task['Added'] = formatted_timestamp
             task['Finished?'] = formatted_finished

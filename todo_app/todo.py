@@ -1,5 +1,4 @@
 import argparse
-import datetime
 from . import display
 from . import db
 
@@ -57,12 +56,16 @@ class Todo:
             self.print_tasks()
         if args.remove:
             self.remove_task()
+            self.print_tasks()
         if args.finish:
             self.finish_task()
+            self.print_tasks()
         if args.unfinish:
             self.unfinish_task()
+            self.print_tasks()
         if args.change:
             self.update_task()
+            self.print_tasks()
         if args.view:
             self.print_tasks()
 
