@@ -30,6 +30,12 @@ class DB:
         cursor.execute('INSERT INTO task_list (task, description, due, finished) VALUES (?, ?, ?, ?)', (task, description, due, finished))
         self.db_connection.commit()
 
+    def remove_task(self, row_id):
+        """ Removes a task from the task list given its ID """
+        cursor = self.db_connection.cursor()
+        cursor.execute('DELETE FROM task_list WHERE ROWID=(?)', (row_id,))
+        self.db_connection.commit()
+
     def get_num_tasks(self):
         """ Returns the number of tasks in the task list """
         cursor = self.db_connection.cursor()
@@ -60,3 +66,15 @@ class DB:
             tasks.append(new_task)
 
         return tasks
+
+    def verify_id(self, row_id):
+        """ Returns true if there is a row in the database that matches
+            the task ID the user gave, False otherwise """
+        cursor = self.db_connection.cursor()
+        cursor.execute('SELECT COUNT(*) FROM task_list where ROWID=(?)', (row_id,))
+        num_count = cursor.fetchone()
+
+        # If there are no matching ID's, it must not be a valid task ID
+        if num_count[0] == 0:
+            return False
+        return True

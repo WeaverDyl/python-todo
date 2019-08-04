@@ -181,3 +181,6 @@ class Display:
                 pass
         return False
 
+    def ask_user_id(self, action):
+        id = input(f'What task would you like to {action}? (Enter an ID or `-1` to cancel): ')
+        return id

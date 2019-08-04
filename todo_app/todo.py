@@ -55,8 +55,8 @@ class Todo:
             self.add_task()
             self.print_tasks()
         if args.remove:
-            self.remove_task()
             self.print_tasks()
+            self.remove_task()
         if args.finish:
             self.finish_task()
             self.print_tasks()
@@ -79,8 +79,20 @@ class Todo:
         self.db_link.add_task(task_title, task_description, task_due)
     def remove_task(self):
         """ Removes a task from the task list """
-        # show task list and ask for id to remove
-        pass
+        row_id = self.display.ask_user_id('remove') # Get the task ID user wants removed
+
+        # Check that the ID is valid
+        if not self.db_link.verify_id(row_id):
+            print(self.display.color_message('Invalid ID given!', 'BOLD', 'RED'))
+            self.remove_task() # recall until user quits or gives valid ID
+        else:
+            self.db_link.remove_task(row_id)
+
+            if self.db_link.get_num_tasks() > 0:
+                print(self.display.color_message('Task successfully removed.', 'BOLD'))
+                self.print_tasks()
+            else:
+                print(self.display.color_message('Task successfully removed. Your task list is empty', 'BOLD'))
     def finish_task(self):
         """ Finishes a given task in the task list """
         # show task list and ask for id to finish
