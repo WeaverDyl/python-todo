@@ -42,7 +42,8 @@ class Todo:
 
         return self.parser
 
-    def check_args(self, args):
+    @staticmethod
+    def check_args(args):
         """ Returns True if an argument was given False otherwise. Used in setup """
         for arg in vars(args):
             if getattr(args, arg):
@@ -66,26 +67,33 @@ class Todo:
             self.print_tasks()
 
     def add_task(self):
+        """ Adds a task to the task list """
         task_title = self.display.ask_user_title()
         task_description = self.display.ask_user_description()
         task_due = self.display.ask_user_due()
 
-        self.db_link.add_task(task_title, task_description, task_due) # Call the db function to add data
+        # Call the db function to add data
+        self.db_link.add_task(task_title, task_description, task_due)
     def remove_task(self):
+        """ Removes a task from the task list """
         # show task list and ask for id to remove
         pass
     def finish_task(self):
+        """ Finishes a given task in the task list """
         # show task list and ask for id to finish
         pass
     def unfinish_task(self):
+        """ Unfinishes a given task in the task list """
         # show task list and ask for id to unfinish
         pass
     def update_task(self):
-       # show task list and ask for id to update
-       # then ask what to update (title/description/due date/finished)
-       pass
+        """ Updates a given task in the task list """
+        # show task list and ask for id to update
+        # then ask what to update (title/description/due date/finished)
+        pass
 
     def print_tasks(self):
+        """ Obtains each row of the task list and prints them after formatting """
         unformatted_rows = self.db_link.get_tasks()
         formatted_rows = self.display.format_row(unformatted_rows)
         self.display.print_task_list_formatted(formatted_rows)
@@ -93,4 +101,3 @@ class Todo:
 def run():
     """ Entry point: creates or loads a new task list if one exists """
     Todo()
-

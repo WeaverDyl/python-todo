@@ -44,11 +44,9 @@ class DB:
         cursor.execute('SELECT * FROM task_list')
 
         initial_data = cursor.fetchall() # Returns list of rows, where each row is a tuple
-        #tasks = [list(task) for task in initial_data] # converts that list of tuples to a list of lists
-
-        tasks = []
 
         # Convert list of tuples to dict and add a row id to each task
+        tasks = []
         for row_id, task in enumerate(initial_data):
             new_task = {}
 

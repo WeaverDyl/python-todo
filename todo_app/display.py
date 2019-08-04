@@ -3,7 +3,6 @@ import math
 import shutil
 from datetime import datetime
 from terminaltables import AsciiTable
-from . import db
 
 class Display:
     colors = {
@@ -26,9 +25,11 @@ class Display:
 
     @staticmethod
     def clear_terminal():
+        """ Clears a terminal to prepare for output """
         os.system('cls' if os.name == 'nt' else 'clear')
 
-    def check_table_fit(self, table):
+    @staticmethod
+    def check_table_fit(table):
         """ Returns true if a terminaltable will fit within the width of
             the current terminal width"""
         term_width = shutil.get_terminal_size().columns
@@ -160,8 +161,7 @@ class Display:
         """ Gets an optional due date for the task from the user """
         date = ''
         asked = False
-        while asked == False or not self.validate_date(date):
-            # RED
+        while not asked or not self.validate_date(date):
             date = input(self.color_message('Optionally, give your task a due date (\'mm/dd/yyyy or mm-dd-yyyy\'): ', 'BOLD'))
             asked = True
             if date == '':
@@ -170,7 +170,8 @@ class Display:
                 print(self.color_message('That\'s not a valid date format!', 'RED', 'BOLD'))
         return date
 
-    def validate_date(self, date_str):
+    @staticmethod
+    def validate_date(date_str):
         """ Ensures that the date given is in an acceptable format """
         for date_format in ('%m/%d/%Y', '%m-%d-%Y'):
             try:
