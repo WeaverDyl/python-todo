@@ -21,15 +21,19 @@ class Display:
     def color_message(self, message, *args):
         """ Sets a message to be a specific color from the colors dict before resetting """
         args_list = [str(color) for color in args]
-        return ''.join([''.join([self.colors[i] for i in args_list]), message, self.colors['RESET']])
+        colors = ''.join([self.colors[i] for i in args_list])
+        return ''.join([colors, message, self.colors['RESET']])
 
     def print_error(self, message):
+        """ Prints a message in bold, red characters """
         print(self.color_message(message, 'BOLD', 'RED'))
 
     def print_success(self, message):
+        """ Prints a message in bold, green characters """
         print(self.color_message(message, 'BOLD', 'GREEN'))
 
     def print_message(self, message):
+        """ Prints a message in bold characters """
         print(self.color_message(message, 'BOLD'))
 
     @staticmethod

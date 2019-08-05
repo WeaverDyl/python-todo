@@ -119,8 +119,6 @@ class Todo:
 
     def update_task(self):
         """ Updates a given task in the task list """
-        # show task list and ask for id to update
-        # then ask what to update (title/description/due date/finished)
         pass
 
     def get_valid_id(self, action):

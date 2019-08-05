@@ -62,7 +62,7 @@ class DB:
 
         # Convert list of tuples to dict and add a row id to each task
         tasks = []
-        for row_id, task in enumerate(initial_data):
+        for task in initial_data:
             new_task = {}
 
             new_task['ID'] = task[0]
