@@ -7,7 +7,7 @@ from terminaltables import AsciiTable
 class Display:
     colors = {
         'RED': '\033[38;5;196m',
-        'ORANGE': '\033[38;5;214',
+        'ORANGE': '\033[38;5;214m',
         'GREEN': '\033[38;5;46m',
 
         'BLUE': '\033[38;5;21m',
@@ -83,16 +83,17 @@ class Display:
             # Format specific columns
             timestamp = task['Added']
             finished = task['Finished?']
+            due = task['Due']
 
             formatted_timestamp = self.format_time(timestamp)
             formatted_finished = self.color_message('✓', 'GREEN', 'BOLD') if finished == 1 else self.color_message('X', 'BOLD', 'RED')
+            formatted_due = self.format_due_date(due, finished)
 
             task['Added'] = formatted_timestamp
             task['Finished?'] = formatted_finished
+            task['Due'] = formatted_due
 
             formatted_tasks.append(task)
-
-        # Color as well! yellow if due date coming up, red if passed
 
         return formatted_tasks
 
@@ -136,6 +137,32 @@ class Display:
         years_passed = math.floor(total_time_diff.total_seconds() / SECONDS_IN_YEAR)
         return f'{years_passed}yr ago'
 
+    def format_due_date(self, due_date, finished):
+        """ Formats the due date column to be colored based on how close
+            the task is to its due date. (Red = overdue, etc...)"""
+        # Don't format tasks that don't have a due date or are finished
+        if due_date == '' or finished == 1:
+            return due_date
+
+        curr_time = datetime.now()
+
+        try:
+            due_date_time = datetime.strptime(due_date, '%m-%d-%Y')
+        except ValueError:
+            due_date_time = datetime.strptime(due_date, '%m/%d/%Y')
+
+        time_until_due = due_date_time - curr_time
+
+        SECONDS_IN_DAY = 86400
+
+        if int(time_until_due.total_seconds()) < 0:
+            if int(time_until_due.total_seconds()) < -SECONDS_IN_DAY:
+                return self.color_message(due_date, 'ORANGE', 'BOLD')
+            else:
+                return self.color_message(due_date, 'RED', 'BOLD')
+
+        return due_date
+
     def print_task_list_formatted(self, rows):
         """ Prints each formatted task to the terminal in the form
             of a table """
@@ -175,7 +202,7 @@ class Display:
         date = ''
         asked = False
         while not asked or not self.validate_date(date):
-            date = input(self.color_message('Optionally, give your task a due date (\'mm/dd/yyyy or mm-dd-yyyy\'): ', 'BOLD'))
+            date = input(self.color_message('Optionally, give your task a due date (\'mm/dd/yyyy\' or \'mm-dd-yyyy\'): ', 'BOLD'))
             asked = True
             if date == '':
                 return date
