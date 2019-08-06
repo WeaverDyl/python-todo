@@ -81,7 +81,8 @@ class DB:
             the task ID the user gave, False otherwise """
         cursor = self.db_connection.cursor()
         cursor.execute('SELECT COUNT(*) FROM task_list where ROWID=(?)', (row_id,))
-        num_count = cursor.fetchone()# User cancelled operation)
+        num_count = cursor.fetchone()
+
         # If there are no matching ID's, it must not be a valid task ID
         if num_count[0] == 0:
             return False
