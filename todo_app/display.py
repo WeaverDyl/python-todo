@@ -7,7 +7,7 @@ from terminaltables import AsciiTable
 class Display:
     colors = {
         'RED': '\033[38;5;196m',
-        'ORANGE': '\033[38;5;214m',
+        'ORANGE': '\033[38;5;220m',
         'GREEN': '\033[38;5;46m',
 
         'BLUE': '\033[38;5;21m',
@@ -155,11 +155,13 @@ class Display:
 
         SECONDS_IN_DAY = 86400
 
+        # Tasks due in 24 hours or less are colored orange
+        if int(time_until_due.total_seconds()) < SECONDS_IN_DAY:
+            return self.color_message(due_date, 'ORANGE', 'BOLD')
+
+        # Overdue tasks are colored red
         if int(time_until_due.total_seconds()) < 0:
-            if int(time_until_due.total_seconds()) < -SECONDS_IN_DAY:
-                return self.color_message(due_date, 'ORANGE', 'BOLD')
-            else:
-                return self.color_message(due_date, 'RED', 'BOLD')
+            return self.color_message(due_date, 'RED', 'BOLD')
 
         return due_date
 
