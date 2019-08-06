@@ -70,9 +70,9 @@ class Display:
         table = AsciiTable(table_data)
 
         if not self.check_table_fit(table):
-            self.print_message("\nTry adding a task to your list! just call `python-todo -a`")
+            self.print_message("Try adding a task to your list! just call `python-todo -a`")
         else:
-            self.print_message("\nTry adding a task to your list! Here's the available commands:")
+            self.print_message("Try adding a task to your list! Here's the available commands:")
             print(table.table)
 
     def format_row(self, tasks):

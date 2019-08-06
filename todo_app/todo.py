@@ -93,7 +93,7 @@ class Todo:
             self.display.print_message('\nTask successfully removed.\n')
             self.print_tasks()
         else:
-            self.display.print_message('\nTask successfully removed. Your task list is empty.\n')
+            self.display.print_message('\nTask successfully removed. Your task list is empty.')
 
     def finish_task(self):
         """ Finishes a given task in the task list """

@@ -14,17 +14,17 @@ class DB:
         cursor.execute('''
                         CREATE TABLE IF NOT EXISTS task_list
                         (date TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-                        task text,
+                        title text,
                         description text DEFAULT '',
                         due DATE,
                         finished BOOLEAN NOT NULL CHECK (finished in (0,1)) DEFAULT (0))
                        ''')
         self.db_connection.commit()
 
-    def add_task(self, task, description, due, finished=0):
+    def add_task(self, title, description, due, finished=0):
         """ Adds a brand new task to the database """
         cursor = self.db_connection.cursor()
-        cursor.execute('INSERT INTO task_list (task, description, due, finished) VALUES (?, ?, ?, ?)', (task, description, due, finished))
+        cursor.execute('INSERT INTO task_list (title, description, due, finished) VALUES (?, ?, ?, ?)', (title, description, due, finished))
         self.db_connection.commit()
 
     def remove_task(self, row_id):
@@ -44,6 +44,9 @@ class DB:
         cursor = self.db_connection.cursor()
         cursor.execute('UPDATE task_list SET finished = 0 WHERE ROWID = (?)', (row_id,))
         self.db_connection.commit()
+
+    def update_task(self, row_id, title, description, due, finished=0):
+        pass
 
     def get_num_tasks(self):
         """ Returns the number of tasks in the task list """
