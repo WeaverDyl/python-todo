@@ -45,8 +45,16 @@ class DB:
         cursor.execute('UPDATE task_list SET finished = 0 WHERE ROWID = (?)', (row_id,))
         self.db_connection.commit()
 
-    def update_task(self, row_id, title, description, due, finished=0):
-        pass
+    def update_task(self, row_id, title, description, due, finished):
+        """ Updates an existing task in the task list """
+        cursor = self.db_connection.cursor()
+        cursor.execute('''UPDATE task_list SET
+                            title = ?,
+                            description = ?,
+                            due = ?,
+                            finished = ?
+                          WHERE ROWID = ?''', (title, description, due, finished, row_id,))
+        self.db_connection.commit()
 
     def get_num_tasks(self):
         """ Returns the number of tasks in the task list """

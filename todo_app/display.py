@@ -212,6 +212,26 @@ class Display:
                 self.print_error('That\'s not a valid date format!')
         return date
 
+    def ask_user_finished(self):
+        valid_responses = {
+            'yes': True,
+            'y': True,
+            'no': False,
+            'n': False
+        }
+
+        default_resp = False
+
+        while True:
+            user_resp = input(self.color_message('Is the task already finished? (y/N) ', 'BOLD')).lower()
+
+            if user_resp in valid_responses:
+                return valid_responses[user_resp]
+            if user_resp == '':
+                return default_resp
+            else:
+                self.print_error('That\'s not a valid answer! Answer (y/N)')
+
     @staticmethod
     def validate_date(date_str):
         """ Ensures that the date given is in an acceptable format """

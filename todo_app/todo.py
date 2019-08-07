@@ -119,7 +119,20 @@ class Todo:
 
     def update_task(self):
         """ Updates a given task in the task list """
-        pass
+        row_id = self.get_valid_id('update')
+
+        if row_id == -1:
+            return
+
+        task_title = self.display.ask_user_title()
+        task_description = self.display.ask_user_description()
+        task_due = self.display.ask_user_due()
+        task_finished = self.display.ask_user_finished()
+
+        # Call the db function to add data
+        self.db_link.update_task(row_id, task_title, task_description, task_due, task_finished)
+        self.display.print_message('\nTask successfully updated.\n')
+        self.print_tasks()
 
     def get_valid_id(self, action):
         """ Gets a valid row ID from the user, used for remove/finish/unfinish
