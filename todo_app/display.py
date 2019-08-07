@@ -1,22 +1,35 @@
 import os
 import math
 import shutil
+import textwrap
 from datetime import datetime
 from terminaltables import AsciiTable
 
 class Display:
-    colors = {
-        'RED': '\033[38;5;196m',
-        'ORANGE': '\033[38;5;220m',
-        'GREEN': '\033[38;5;46m',
+    def __init__(self):
+        self.colors = {
+            'RED': '\033[38;5;196m',
+            'ORANGE': '\033[38;5;220m',
+            'GREEN': '\033[38;5;46m',
 
-        'BLUE': '\033[38;5;21m',
-        'CYAN': '\033[38;5;51m',
+            'BLUE': '\033[38;5;21m',
+            'CYAN': '\033[38;5;51m',
 
-        'BOLD': '\u001b[1m',
-        'UNDERLINE': '\u001b[4m',
-        'RESET': '\033[0m'
-    }
+            'BOLD': '\u001b[1m',
+            'UNDERLINE': '\u001b[4m',
+            'RESET': '\033[0m'
+        }
+
+        # Defines where to insert newlines in case of
+        # situations where one task has some long columns
+        self.max_col_widths = {
+            'ID': 4,
+            'Added': 10,
+            'Title': 30,
+            'Description': 30,
+            'Due': 10,
+            'Finished': 1
+        }
 
     def color_message(self, message, *args):
         """ Sets a message to be a specific color from the colors dict before resetting """
@@ -68,6 +81,7 @@ class Display:
                     ['-v/--view', 'View the whole task list']]
         table_data = commands
         table = AsciiTable(table_data)
+        table.inner_row_border = True
 
         if not self.check_table_fit(table):
             self.print_message("Try adding a task to your list! just call `python-todo -a`")
@@ -79,8 +93,16 @@ class Display:
         """ Performs formatting tasks such as changing task completions from (0,1) to (X/✓) """
         formatted_tasks = []
 
+
+        # USE self.max_col_widths to insert newlines where necessary
+        # you'll need to add more variables equal to task[...]
+        # try to break at closest word break before limit or use hyphens
+
         for task in tasks:
             # Format specific columns
+            title = task['Title']
+            description = task['Description']
+
             timestamp = task['Added']
             finished = task['Finished?']
             due = task['Due']
@@ -89,6 +111,12 @@ class Display:
             formatted_finished = self.color_message('✓', 'GREEN', 'BOLD') if finished == 1 else self.color_message('X', 'BOLD', 'RED')
             formatted_due = self.format_due_date(due, finished)
 
+            # Wrap long lines in the title or description
+            formatted_title = self.format_long_lines(title, 'Title')
+            formatted_description = self.format_long_lines(description, 'Description')
+
+            task['Title'] = formatted_title
+            task['Description'] = formatted_description
             task['Added'] = formatted_timestamp
             task['Finished?'] = formatted_finished
             task['Due'] = formatted_due
@@ -165,6 +193,10 @@ class Display:
 
         return due_date
 
+    def format_long_lines(self, long_text, element):
+        wrapper = textwrap.TextWrapper(width=self.max_col_widths[element])
+        return '\n'.join(wrapper.wrap(text = long_text))
+
     def print_task_list_formatted(self, rows):
         """ Prints each formatted task to the terminal in the form
             of a table """
@@ -172,6 +204,7 @@ class Display:
         table_data = [task.values() for task in rows]
         table_data.insert(0, header) # The column headers are the first element of the list
         table = AsciiTable(table_data) # Create the table -- but test width before printing
+        table.inner_row_border = True # Separates each task
 
         if not self.check_table_fit(table):
             max_width_table = table.table_width
