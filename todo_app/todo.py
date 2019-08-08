@@ -77,7 +77,7 @@ class Todo:
 
         # Call the db function to add data
         self.db_link.add_task(task_title, task_description, task_due)
-        self.display.print_message('\nTask successfully added.\n')
+        self.display.print_success('\nTask successfully added.\n')
 
     def remove_task(self):
         """ Removes a task from the task list """
@@ -90,10 +90,10 @@ class Todo:
 
         # If the task list is empty, print that fact, else print the rest of the tasks
         if self.db_link.get_num_tasks() > 0:
-            self.display.print_message('\nTask successfully removed.\n')
+            self.display.print_success('\nTask successfully removed.\n')
             self.print_tasks()
         else:
-            self.display.print_message('\nTask successfully removed. Your task list is empty.')
+            self.display.print_success('\nTask successfully removed. Your task list is empty.')
 
     def finish_task(self):
         """ Finishes a given task in the task list """
@@ -103,7 +103,7 @@ class Todo:
             return
 
         self.db_link.finish_task(row_id)
-        self.display.print_message('\nTask successfully finished.\n')
+        self.display.print_success('\nTask successfully finished.\n')
         self.print_tasks()
 
     def unfinish_task(self):
@@ -114,7 +114,7 @@ class Todo:
             return
 
         self.db_link.unfinish_task(row_id)
-        self.display.print_message('\nTask successfully unfinished.\n')
+        self.display.print_success('\nTask successfully unfinished.\n')
         self.print_tasks()
 
     def update_task(self):
@@ -131,7 +131,7 @@ class Todo:
 
         # Call the db function to add data
         self.db_link.update_task(row_id, task_title, task_description, task_due, task_finished)
-        self.display.print_message('\nTask successfully updated.\n')
+        self.display.print_success('\nTask successfully updated.\n')
         self.print_tasks()
 
     def get_valid_id(self, action):
