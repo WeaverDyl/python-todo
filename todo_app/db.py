@@ -32,6 +32,7 @@ class DB:
         cursor = self.db_connection.cursor()
         cursor.execute('DELETE FROM task_list WHERE ROWID = (?)', (row_id,))
         self.db_connection.commit()
+        cursor.execute('VACUUM') # Clean up ID's
 
     def finish_task(self, row_id):
         """ Changes a task from being unfinished to finished """
