@@ -4,7 +4,9 @@ A simple todo list CLI tool!
 
 ## Installation
 
-Coming Soon
+```pip install python-todo```
+
+(Python 3 is required)
 
 ## Valid Commands
 

@@ -136,7 +136,7 @@ class Todo:
         if self.db_link.get_num_tasks() > 0:
             self.print_tasks()
         else:
-            self.display.print_error("You don't have any tasks! Add a task by calling `python-todo -a`")
+            self.display.print_error('You don\'t have any tasks! Add a task by calling `python-todo -a`')
 
     def get_valid_id(self, action):
         """ Gets a valid row ID from the user, used for remove/finish/unfinish
@@ -146,11 +146,11 @@ class Todo:
         # We repeat until we get a valid ID or user cancels
         while not self.db_link.verify_id(row_id):
             # User cancelled operation
-            if row_id == "-1":
+            if row_id == '-1':
                 return -1
 
             if not self.db_link.verify_id(row_id):
-                self.display.print_error("Invalid ID given")
+                self.display.print_error('Invalid ID given')
 
             row_id = self.display.ask_user_id(action)
 

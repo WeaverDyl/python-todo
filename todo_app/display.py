@@ -74,9 +74,9 @@ class Display:
         table.inner_row_border = True
 
         if not self.check_table_fit(table):
-            self.print_message("Try adding a task to your list! just call `python-todo -a`")
+            self.print_message('Try adding a task to your list! just call `python-todo -a`')
         else:
-            self.print_message("Try adding a task to your list! Here's the available commands:")
+            self.print_message('Try adding a task to your list! Here\'s the available commands:')
             print(table.table)
 
     @staticmethod
