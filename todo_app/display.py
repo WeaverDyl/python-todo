@@ -54,16 +54,6 @@ class Display:
         """ Clears a terminal to prepare for output """
         os.system('cls' if os.name == 'nt' else 'clear')
 
-    @staticmethod
-    def check_table_fit(table):
-        """ Returns true if a terminaltable will fit within the width of
-            the current terminal width"""
-        term_width = shutil.get_terminal_size().columns
-        table_width = table.table_width
-        if table_width > term_width:
-            return False
-        return True
-
     def print_welcome(self):
         """ Prints a simple welcome message. """
         Display.clear_terminal()
@@ -88,6 +78,16 @@ class Display:
         else:
             self.print_message("Try adding a task to your list! Here's the available commands:")
             print(table.table)
+
+    @staticmethod
+    def check_table_fit(table):
+        """ Returns true if a terminaltable will fit within the width of
+            the current terminal width"""
+        term_width = shutil.get_terminal_size().columns
+        table_width = table.table_width
+        if table_width > term_width:
+            return False
+        return True
 
     def format_row(self, tasks):
         """ Performs formatting tasks such as changing task completions from (0,1) to (X/✓) """
@@ -160,6 +160,17 @@ class Display:
         years_passed = math.floor(total_time_diff.total_seconds() / SECONDS_IN_YEAR)
         return f'{years_passed}yr ago'
 
+    @staticmethod
+    def validate_date(date_str):
+        """ Ensures that the date given is in an acceptable format """
+        for date_format in ('%m/%d/%Y', '%m-%d-%Y'):
+            try:
+                if datetime.strptime(date_str, date_format):
+                    return True
+            except ValueError:
+                pass
+        return False
+
     def format_due_date(self, due_date, finished):
         """ Formats the due date column to be colored based on how close
             the task is to its due date. (Red = overdue, etc...)"""
@@ -190,7 +201,7 @@ class Display:
 
     def format_long_lines(self, long_text, element):
         wrapper = textwrap.TextWrapper(width=self.max_col_widths[element])
-        return '\n'.join(wrapper.wrap(text = long_text))
+        return '\n'.join(wrapper.wrap(text=long_text))
 
     def print_task_list_formatted(self, rows):
         """ Prints each formatted task to the terminal in the form
@@ -210,7 +221,6 @@ class Display:
         # The table fits and we can print it
         self.print_message('Here are your current tasks:')
         print(table.table)
-
 
     # Methods for ADDING tasks
     def ask_user_title(self):
@@ -258,19 +268,7 @@ class Display:
                 return valid_responses[user_resp]
             if user_resp == '':
                 return default_resp
-            else:
-                self.print_error('That\'s not a valid answer! Answer (y/N)')
-
-    @staticmethod
-    def validate_date(date_str):
-        """ Ensures that the date given is in an acceptable format """
-        for date_format in ('%m/%d/%Y', '%m-%d-%Y'):
-            try:
-                if datetime.strptime(date_str, date_format):
-                    return True
-            except ValueError:
-                pass
-        return False
+            self.print_error('That\'s not a valid answer! Answer (y/N)')
 
     def ask_user_id(self, action):
         """ Ask the user for a task ID to remove/finish/unfinish/update """
