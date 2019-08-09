@@ -93,11 +93,6 @@ class Display:
         """ Performs formatting tasks such as changing task completions from (0,1) to (X/✓) """
         formatted_tasks = []
 
-
-        # USE self.max_col_widths to insert newlines where necessary
-        # you'll need to add more variables equal to task[...]
-        # try to break at closest word break before limit or use hyphens
-
         for task in tasks:
             # Format specific columns
             title = task['Title']
@@ -209,7 +204,7 @@ class Display:
         if not self.check_table_fit(table):
             max_width_table = table.table_width
             term_width = shutil.get_terminal_size().columns
-            self.print_message(f'The task list has a width of {max_width_table} and cannot fit within the terminal of width {term_width}.')
+            self.print_message(f'The task list has a width of {max_width_table} and cannot fit in the terminal of width {term_width}.')
             return
 
         # The table fits and we can print it
@@ -246,6 +241,7 @@ class Display:
         return date
 
     def ask_user_finished(self):
+        """ Asks a user if a task is finished """
         valid_responses = {
             'yes': True,
             'y': True,

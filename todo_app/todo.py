@@ -16,12 +16,9 @@ class Todo:
 
         # Check for arguments
         if self.check_args(args):
-            # Program was passed arguments
             self.handle_args(args)
         else:
-            # Program was run simply as 'python-todo'. Instead of showing an
-            # empty task list (if there are no tasks), show the commands that
-            # can be used instead.
+            # No args given. Show tasks if there are any, or commands
             if self.db_link.get_num_tasks() == 0:
                 self.display.print_commands()
             else:
@@ -67,7 +64,7 @@ class Todo:
             self.print_tasks()
             self.update_task()
         if args.view:
-            self.print_tasks()
+            self.view_tasks()
 
     def add_task(self):
         """ Adds a task to the task list """
@@ -129,10 +126,17 @@ class Todo:
         task_due = self.display.ask_user_due()
         task_finished = self.display.ask_user_finished()
 
-        # Call the db function to add data
+        # Call the db function to update data
         self.db_link.update_task(row_id, task_title, task_description, task_due, task_finished)
         self.display.print_success('\nTask successfully updated.\n')
         self.print_tasks()
+
+    def view_tasks(self):
+        """ Prints the current task list or a message if there are no tasks """
+        if self.db_link.get_num_tasks() > 0:
+            self.print_tasks()
+        else:
+            self.display.print_error("You don't have any tasks! Add a task by calling `python-todo -a`")
 
     def get_valid_id(self, action):
         """ Gets a valid row ID from the user, used for remove/finish/unfinish
