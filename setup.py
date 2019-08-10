@@ -7,7 +7,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='python-todo',
-    version='0.3',
+    version='0.4',
     description='A command line todo application',
     long_description = long_description,
     long_description_content_type='text/markdown',
@@ -16,7 +16,7 @@ setup(
     ],
     url='http://github.com/weaverdyl/python-todo',
     author='Dylan Weaver',
-    author_email='dylan@weaverdyl.compile',
+    author_email='dylan@weaverdyl.com',
     license='MIT',
     packages=['todo_app'],
     entry_points={
