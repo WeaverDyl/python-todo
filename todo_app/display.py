@@ -12,9 +12,6 @@ class Display:
             'ORANGE': '\033[38;5;220m',
             'GREEN': '\033[38;5;46m',
 
-            'BLUE': '\033[38;5;21m',
-            'CYAN': '\033[38;5;51m',
-
             'BOLD': '\u001b[1m',
             'UNDERLINE': '\u001b[4m',
             'RESET': '\033[0m'
