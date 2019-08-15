@@ -259,13 +259,13 @@ class Display:
         default_resp = False
 
         while True:
-            user_resp = input(self.color_message('Is the task already finished? (y/N) ', 'BOLD')).lower()
+            user_resp = input(self.color_message('Is the task already finished? (y/N): ', 'BOLD')).lower()
 
             if user_resp in valid_responses:
                 return valid_responses[user_resp]
             if user_resp == '':
                 return default_resp
-            self.print_error('That\'s not a valid answer! Answer (y/N)')
+            self.print_error('That\'s not a valid answer! Answer (y/N).')
 
     def ask_user_id(self, action):
         """ Ask the user for a task ID to remove/finish/unfinish/update """
