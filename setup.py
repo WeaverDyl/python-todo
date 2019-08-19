@@ -7,7 +7,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='python-todo',
-    version='0.4',
+    version='0.4.1',
     python_requires='>=3.6',
     description='A command line todo application',
     long_description = long_description,
