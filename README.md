@@ -6,7 +6,7 @@ A simple todo list CLI tool!
 
 ```pip install python-todo```
 
-(Python 3 is required)
+(Python 3.6 or greater is currently required)
 
 ## Valid Commands
 
