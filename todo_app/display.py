@@ -186,13 +186,13 @@ class Display:
 
         SECONDS_IN_DAY = 86400
 
-        # Tasks due in 24 hours or less are colored orange
-        if int(time_until_due.total_seconds()) < SECONDS_IN_DAY:
-            return self.color_message(due_date, 'ORANGE', 'BOLD')
-
         # Overdue tasks are colored red
         if int(time_until_due.total_seconds()) < 0:
             return self.color_message(due_date, 'RED', 'BOLD')
+
+        # Tasks due in 24 hours or less are colored orange
+        if int(time_until_due.total_seconds()) < SECONDS_IN_DAY:
+            return self.color_message(due_date, 'ORANGE', 'BOLD')
 
         return due_date
 
